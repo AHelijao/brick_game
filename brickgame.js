@@ -1,50 +1,72 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-// Ball
-let x = canvas.width / 2;
-let y = canvas.height - 30;
-let dx = 2;
-let dy = -2;
-const ballRadius = 10;
+const landing = document.getElementById("landing-screen");
+const startBtn = document.getElementById("start-btn");
 
-// Paddle
-const paddleHeight = 10;
-const paddleWidth = 75;
-let paddleX = (canvas.width - paddleWidth) / 2;
-
-// Bricks
-const brickRowCount = 5;
-const brickColumnCount = 3;
-const brickWidth = 75;
-const brickHeight = 20;
-const brickPadding = 10;
-const brickOffsetTop = 30;
-const brickOffsetLeft = 30;
-
-let bricks = [];
-for (let c = 0; c < brickColumnCount; c++) {
-  bricks[c] = [];
-  for (let r = 0; r < brickRowCount; r++) {
-    bricks[c][r] = { x: 0, y: 0, status: 1 };
-  }
-}
-
-// Input
+// Input flags
 let rightPressed = false;
 let leftPressed = false;
 
+// Game state variables
+let x, y, dx, dy, ballRadius;
+let paddleHeight, paddleWidth, paddleX;
+let brickRowCount, brickColumnCount, brickWidth, brickHeight;
+let brickPadding, brickOffsetTop, brickOffsetLeft;
+let bricks = [];
+
+// Start the game after clicking "Start Game"
+startBtn.addEventListener("click", () => {
+  landing.style.display = "none";
+  canvas.style.display = "block";
+  initGame();
+});
+
+function initGame() {
+  // Ball
+  x = canvas.width / 2;
+  y = canvas.height - 30;
+  dx = 2;
+  dy = -2;
+  ballRadius = 10;
+
+  // Paddle
+  paddleHeight = 10;
+  paddleWidth = 75;
+  paddleX = (canvas.width - paddleWidth) / 2;
+
+  // Bricks
+  brickRowCount = 5;
+  brickColumnCount = 3;
+  brickWidth = 75;
+  brickHeight = 20;
+  brickPadding = 10;
+  brickOffsetTop = 30;
+  brickOffsetLeft = 30;
+
+  bricks = [];
+  for (let c = 0; c < brickColumnCount; c++) {
+    bricks[c] = [];
+    for (let r = 0; r < brickRowCount; r++) {
+      bricks[c][r] = { x: 0, y: 0, status: 1 };
+    }
+  }
+
+  draw(); // Start the game loop
+}
+
+// Handle keyboard input
 document.addEventListener("keydown", e => {
-  if (e.key === "Right" || e.key === "ArrowRight") rightPressed = true;
-  if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = true;
+  if (e.key === "Right" || e.key === "ArrowRight" || e.key === "d" || e.key === "D") rightPressed = true;
+  if (e.key === "Left" || e.key === "ArrowLeft" || e.key === "a" || e.key === "A") leftPressed = true;
 });
 
 document.addEventListener("keyup", e => {
-  if (e.key === "Right" || e.key === "ArrowRight") rightPressed = false;
-  if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = false;
+  if (e.key === "Right" || e.key === "ArrowRight" || e.key === "d" || e.key === "D") rightPressed = false;
+  if (e.key === "Left" || e.key === "ArrowLeft" || e.key === "a" || e.key === "A") leftPressed = false;
 });
 
-// Draw functions
+// Drawing functions
 function drawBall() {
   ctx.beginPath();
   ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
@@ -105,7 +127,7 @@ function draw() {
   drawPaddle();
   collisionDetection();
 
-  // Ball movement
+  // Ball movement and wall collisions
   if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) dx = -dx;
   if (y + dy < ballRadius) {
     dy = -dy;
@@ -113,8 +135,9 @@ function draw() {
     if (x > paddleX && x < paddleX + paddleWidth) {
       dy = -dy;
     } else {
-      alert("Game Over");
+      alert("💥 Game Over!");
       document.location.reload();
+      return;
     }
   }
 
@@ -127,5 +150,3 @@ function draw() {
 
   requestAnimationFrame(draw);
 }
-
-draw();

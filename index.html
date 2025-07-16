@@ -2,18 +2,68 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Brick Game</title>
+  <title>Brick Breaker</title>
   <style>
-    canvas {
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom, #ffe4b5, #ffdab9);
+    }
+
+    #landing-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+    }
+
+    #landing-screen h1 {
+      font-size: 3rem;
+      color: #333;
+      margin-bottom: 20px;
+      animation: fadeIn 1.2s ease-in;
+    }
+
+    #start-btn {
+      padding: 12px 30px;
+      font-size: 1.2rem;
+      background-color: #0095DD;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    #start-btn:hover {
+      background-color: #007acc;
+    }
+
+    #gameCanvas {
+      display: none;
       background: #eee;
+      margin: 20px auto;
       display: block;
-      margin: 0 auto;
       border: 2px solid #333;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
+
+  <div id="landing-screen">
+    <img src="resource/title.gif" alt="Brick Breaker" id="title-gif" />
+    <button id="start-btn">Start Game</button>
+  </div>
+
   <canvas id="gameCanvas" width="480" height="320"></canvas>
+
   <script src="brickgame.js"></script>
 </body>
 </html>
